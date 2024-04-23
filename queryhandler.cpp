@@ -7,7 +7,7 @@ QueryHandler* QueryHandler::instance=nullptr;
 
 QueryHandler::QueryHandler()
 {
-    QString serverName = "DESKTOP-UMU84AP\\SQLEXPRESS";
+    QString serverName = "DESKTOP-JBOB4F7\\SQLEXPRESS";
     QString dbName = "ATMTeams_DB";
     db=QSqlDatabase::addDatabase("QODBC");
     QString dsn = QString("DRIVER={SQL Server};SERVER=%1;DATABASE=%2;Trusted_Connection=yes;").arg(serverName).arg(dbName);
@@ -269,7 +269,8 @@ bool QueryHandler::directMessageChatExists(int user1_id, int user2_id)
 int QueryHandler::createDirectMessageChat(int user1_id, int user2_id)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO Chats (chat_type) VALUES ('direct')");
+    query.prepare("INSERT INTO Chats (chat_type,creator_id) VALUES ('direct',:user1_id)");
+    query.bindValue(":user1_id",user1_id);
     if (!query.exec()) {
         qDebug() << "Error creating direct message chat:" << query.lastError();
         return -1;
@@ -286,4 +287,27 @@ void QueryHandler::addUserToChat(int chat_id, int user_id)
     query.prepare("INSERT INTO ChatUsers (chat_id, user_id) VALUES (:chat_id, :user_id)");
     query.bindValue(":chat_id", chat_id);
     query.bindValue(":user_id", user_id);
+
+    if(!query.exec())
+    {
+        qDebug()<<"Error adding users to chat";
+    }
+    else qDebug()<<"User with id "<<user_id<<" added";
+}
+
+int QueryHandler::getUserId(QString username)
+{
+    QSqlQuery query;
+    query.prepare("SELECT user_id from Users where username= :username");
+    query.bindValue(":username",username);
+
+    if(!query.exec())
+    {
+        qDebug()<<"Error";
+    }
+
+    int user_id=query.value(0).toInt();
+
+    return user_id;
+
 }

@@ -30,6 +30,7 @@ public:
     bool directMessageChatExists(int user1_id,int user2_id);
     int createDirectMessageChat(int user1_id,int user2_id);
     void addUserToChat(int chat_id,int user_id);
+    int getUserId(QString username);
 };
 
 #endif // QUERYHANDLER_H
