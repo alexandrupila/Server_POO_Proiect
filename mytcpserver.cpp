@@ -3,6 +3,7 @@
 #include "registerrequest.h"
 #include "loginrequest.h"
 #include "updateprofilerequest.h"
+#include "createdirectmessagechatrequest.h"
 #include "Logger.h"
 #include "clientthread.h"
 
@@ -28,29 +29,30 @@ void MyTcpServer::destroyInstance()
 
 void MyTcpServer::incomingConnection(qintptr socketDescriptor)
 {
-    // QTcpSocket *clientSocket = new QTcpSocket(this);
-    // if (clientSocket->setSocketDescriptor(socketDescriptor)) {
-    //     clients.append(clientSocket);
+    QTcpSocket *clientSocket = new QTcpSocket(this);
+    if (clientSocket->setSocketDescriptor(socketDescriptor)) {
+        clients.append(clientSocket);
 
-    //     connect(clientSocket, &QTcpSocket::readyRead, this, [this, clientSocket]() {
-    //         readClientData(clientSocket);
-    //     });
+        connect(clientSocket, &QTcpSocket::readyRead, this, [this, clientSocket]() {
+            readClientData(clientSocket);
+        });
 
-    //     connect(clientSocket, &QTcpSocket::disconnected, this, &MyTcpServer::clientDisconnected);
+        connect(clientSocket, &QTcpSocket::disconnected, this, &MyTcpServer::handleClientDisconnected);
 
-    //     Logger::logConnection("Client connected with descriptor:"+QString::number(socketDescriptor));
+        Logger::logConnection("Client connected with descriptor:"+QString::number(socketDescriptor));
 
 
-    // } else {
-    //     delete clientSocket;
-    // }
-
+    } else {
+        delete clientSocket;
+    }
+    /*
     ClientThread *clientThread = new ClientThread(socketDescriptor, this);
 
     connect(clientThread, &ClientThread::clientConnected, this, &MyTcpServer::handleClientConnected);
     connect(clientThread, &ClientThread::clientDisconnected, this, &MyTcpServer::handleClientDisconnected);
 
     clientThread->start();
+*/
 
 }
 
@@ -76,27 +78,27 @@ void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientS
 
     IRequest* receivedRequest;
 
-    if(jsonObj.value("Request_type")=="Login")
-    {
-        QJsonObject tempObj;
-        tempObj["Login"]="ok";
-        qDebug()<<"Sending json: "<<tempObj;
-        QJsonDocument doc(tempObj);
+    // if(jsonObj.value("Request_type")=="Login")
+    // {
+    //     QJsonObject tempObj;
+    //     tempObj["Login"]="ok";
+    //     qDebug()<<"Sending json: "<<tempObj;
+    //     QJsonDocument doc(tempObj);
 
-        MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
-        return;
-    }
-    else if(jsonObj.value("Request_type")=="Register")
-    {
-        QJsonObject tempObj;
-        tempObj["Register"]="ok";
-        qDebug()<<"Sending json: "<<tempObj;
-        QJsonDocument doc(tempObj);
+    //     MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
+    //     return;
+    // }
+    // else if(jsonObj.value("Request_type")=="Register")
+    // {
+    //     QJsonObject tempObj;
+    //     tempObj["Register"]="ok";
+    //     qDebug()<<"Sending json: "<<tempObj;
+    //     QJsonDocument doc(tempObj);
 
-        MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
-        return;
-    }
-    else if(jsonObj.value("request_type")=="register")
+    //     MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
+    //     return;
+    // }
+    if(jsonObj.value("request_type")=="register")
     {
         receivedRequest=new RegisterRequest;
     }
@@ -108,8 +110,12 @@ void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientS
     {
         receivedRequest= new UpdateProfileRequest;
     }
+    else if(jsonObj.value("request_type")=="direct_chat")
+    {
+        receivedRequest=new CreateDirectMessageChatRequest;
+    }
 
-    else receivedRequest=new RegisterRequest;
+    else return;
 
     receivedRequest->processRequest(jsonObj,clientSocket);
 
