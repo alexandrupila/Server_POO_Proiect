@@ -8,24 +8,21 @@ void CreateDirectMessageChatRequest::processRequest(QJsonObject request, QTcpSoc
 {
     QueryHandler &qh=QueryHandler::getInstance();
 
-
     int user1_id=request.value("user_id").toInt();
     QString user2_name=request.value("seconduser_name").toString();
     int user2_id=qh.getUserId(user2_name);
+    QString chat_name=request.value("chat_name").toString();
 
     bool chatExists = qh.directMessageChatExists(user1_id, user2_id);
-
     int chat_id;
     if(!chatExists)
     {
-        chat_id = qh.createDirectMessageChat(user1_id, user2_id);
+        chat_id = qh.createDirectMessageChat(user1_id,chat_name);
 
         qh.addUserToChat(chat_id, user1_id);
         qh.addUserToChat(chat_id, user2_id);
     }
     else return;
-
-    QString chat_name=QString("%1-%2").arg(user1_id).arg(user2_id);
 
     DirectMessageChat* dm_chat=new DirectMessageChat(chat_id,chat_name);
 

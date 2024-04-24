@@ -32,6 +32,8 @@ public slots:
     void sendDataToClients(const QByteArray &data);
     void sendDataToClient(const QByteArray &data, qintptr clientSocketDescriptor);
     void handleClientConnected(QTcpSocket* clientSocket);
+signals:
+    void loginRequestSignal(QJsonObject request,QTcpSocket* clientSocket);
 
 };
 

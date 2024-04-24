@@ -28,7 +28,7 @@ public:
     void updateUser(User updated_user);
     QVector<IChat*> retrieveChats(int id_user);
     bool directMessageChatExists(int user1_id,int user2_id);
-    int createDirectMessageChat(int user1_id,int user2_id);
+    int createDirectMessageChat(int creator_id,QString chat_name);
     void addUserToChat(int chat_id,int user_id);
     int getUserId(QString username);
 };

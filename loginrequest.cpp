@@ -7,7 +7,7 @@ LoginRequest::LoginRequest() {}
 
 void LoginRequest::processRequest(QJsonObject request, QTcpSocket *clientSocket)
 {
-     QueryHandler& qh=QueryHandler::getInstance();
+    QueryHandler& qh=QueryHandler::getInstance();
 
     QString email=request.value("email").toString();
     QString password=request.value("password").toString();

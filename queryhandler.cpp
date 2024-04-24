@@ -266,11 +266,12 @@ bool QueryHandler::directMessageChatExists(int user1_id, int user2_id)
     return count > 0;
 }
 
-int QueryHandler::createDirectMessageChat(int user1_id, int user2_id)
+int QueryHandler::createDirectMessageChat(int creator_id,QString chat_name)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO Chats (chat_type,creator_id) VALUES ('direct',:user1_id)");
-    query.bindValue(":user1_id",user1_id);
+    query.prepare("INSERT INTO Chats (chat_type,creator_id,chat_name) VALUES ('direct',:user1_id,:chat_name)");
+    query.bindValue(":user1_id",creator_id);
+    query.bindValue(":chat_name",chat_name);
     if (!query.exec()) {
         qDebug() << "Error creating direct message chat:" << query.lastError();
         return -1;

@@ -13,12 +13,14 @@ SOURCES += \
     achannel.cpp \
     achat.cpp \
     amessage.cpp \
+    aresponse.cpp \
     asubmission.cpp \
     ateam.cpp \
     chatsrequest.cpp \
     clientthread.cpp \
     createdirectmessagechatrequest.cpp \
     directmessagechat.cpp \
+    errorresponse.cpp \
     filemessage.cpp \
     groupchat.cpp \
     iassignment.cpp \
@@ -26,14 +28,17 @@ SOURCES += \
     ichat.cpp \
     imessage.cpp \
     irequest.cpp \
+    iresponse.cpp \
     iserializable.cpp \
     isubmission.cpp \
     iteam.cpp \
     logger.cpp \
+    loginhandler.cpp \
     loginrequest.cpp \
     main.cpp \
     mainwindow.cpp \
     mytcpserver.cpp \
+    okresponse.cpp \
     queryhandler.cpp \
     registerrequest.cpp \
     sendmessagerequest.cpp \
@@ -46,12 +51,14 @@ HEADERS += \
     achannel.h \
     achat.h \
     amessage.h \
+    aresponse.h \
     asubmission.h \
     ateam.h \
     chatsrequest.h \
     clientthread.h \
     createdirectmessagechatrequest.h \
     directmessagechat.h \
+    errorresponse.h \
     filemessage.h \
     groupchat.h \
     iassignment.h \
@@ -59,13 +66,16 @@ HEADERS += \
     ichat.h \
     imessage.h \
     irequest.h \
+    iresponse.h \
     iserializable.h \
     isubmission.h \
     iteam.h \
     logger.h \
+    loginhandler.h \
     loginrequest.h \
     mainwindow.h \
     mytcpserver.h \
+    okresponse.h \
     queryhandler.h \
     registerrequest.h \
     sendmessagerequest.h \

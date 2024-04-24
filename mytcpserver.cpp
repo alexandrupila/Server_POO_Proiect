@@ -104,7 +104,7 @@ void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientS
     }
     else if(jsonObj.value("request_type")=="login")
     {
-        receivedRequest=new LoginRequest;
+        emit loginRequestSignal(jsonObj,clientSocket);
     }
     else if(jsonObj.value("request_type")=="update_profile")
     {

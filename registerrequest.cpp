@@ -5,6 +5,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QByteArray>
+#include "okresponse.h"
+#include "errorresponse.h"
 RegisterRequest::RegisterRequest() {}
 
 
@@ -29,12 +31,21 @@ void RegisterRequest::processRequest(QJsonObject request,QTcpSocket* clientSocke
         qh.insertUser(user_nou);
 
         user_nou=qh.retrieveNewUser(email);
+
+        OkResponse response("valid");
+
+        response.sendResponse(clientSocket);
+
         MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());
 
         qDebug()<<"userul nu exista, s-au adaugat datele\n";
 
         return;
     }
+
+    ErrorResponse response("invalid_credentials");
+
+    response.sendResponse(clientSocket);
 
     //TODO: Mesaj de eroare daca username/email sunt deja existente
     //MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());
