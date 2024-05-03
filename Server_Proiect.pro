@@ -12,20 +12,25 @@ SOURCES += \
     aassignment.cpp \
     achannel.cpp \
     achat.cpp \
+    afile.cpp \
     amessage.cpp \
     aresponse.cpp \
     asubmission.cpp \
     ateam.cpp \
     chatsrequest.cpp \
-    clientthread.cpp \
     createdirectmessagechatrequest.cpp \
+    datatransferhandler.cpp \
     directmessagechat.cpp \
+    errorexception.cpp \
     errorresponse.cpp \
+    exception.cpp \
+    file.cpp \
     filemessage.cpp \
     groupchat.cpp \
     iassignment.cpp \
     ichannel.cpp \
     ichat.cpp \
+    ifile.cpp \
     imessage.cpp \
     irequest.cpp \
     iresponse.cpp \
@@ -44,26 +49,32 @@ SOURCES += \
     sendmessagerequest.cpp \
     textmessage.cpp \
     updateprofilerequest.cpp \
-    user.cpp
+    user.cpp \
+    workerthread.cpp
 
 HEADERS += \
     aassignment.h \
     achannel.h \
     achat.h \
+    afile.h \
     amessage.h \
     aresponse.h \
     asubmission.h \
     ateam.h \
     chatsrequest.h \
-    clientthread.h \
     createdirectmessagechatrequest.h \
+    datatransferhandler.h \
     directmessagechat.h \
+    errorexception.h \
     errorresponse.h \
+    exception.h \
+    file.h \
     filemessage.h \
     groupchat.h \
     iassignment.h \
     ichannel.h \
     ichat.h \
+    ifile.h \
     imessage.h \
     irequest.h \
     iresponse.h \
@@ -81,7 +92,8 @@ HEADERS += \
     sendmessagerequest.h \
     textmessage.h \
     updateprofilerequest.h \
-    user.h
+    user.h \
+    workerthread.h
 
 FORMS += \
     mainwindow.ui

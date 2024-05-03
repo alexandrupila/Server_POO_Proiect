@@ -2,6 +2,7 @@
 #include "user.h"
 #include "mytcpserver.h"
 #include "queryhandler.h"
+#include "datatransferhandler.h"
 
 LoginRequest::LoginRequest() {}
 
@@ -15,18 +16,18 @@ void LoginRequest::processRequest(QJsonObject request, QTcpSocket *clientSocket)
     qDebug()<<"email:"<<email<<"\n";
     qDebug()<<"password:"<<password<<"\n";
 
-    //query in baza de date daca user-ul exista deja
-    //daca nu exista, sa se creeze un user nou
-
-
     if(!qh.checkCredentials(email,password))
     {
-        return;
+        //return;
     }
 
+    //User user_nou=qh.retrieveNewUser(email);
+    User user_nou(5,"test","testmail","testpass");
 
-    User user_nou=qh.retrieveNewUser(email);
+    DataTransferHandler* transferhandler=new DataTransferHandler(clientSocket);
 
-    MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());
+    transferhandler->sendDataToClient(user_nou.serialize().toJson());
+
+   //MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());
 
 }

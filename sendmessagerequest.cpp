@@ -23,7 +23,8 @@ void SendMessageRequest::processRequest(QJsonObject request, QTcpSocket *clientS
     {
         QString filename=request.value("filename").toString();
         QString file_content=request.value("file_content").toString();
-        new_message=new FileMessage(filename,file_content,sender_id,chat_id);
+        File newfile(filename,file_content);
+        new_message=new FileMessage(newfile,sender_id,chat_id);
         //initializare pentru FileMessage
     }
 

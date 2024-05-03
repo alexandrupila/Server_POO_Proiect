@@ -11,6 +11,8 @@ public:
     DirectMessageChat(int id, QString name) {this->chat_id=id; this->chat_name=name;}
     QJsonDocument serialize() override;
     void deserialize(QJsonObject& receivedObj) override;
+
+    DirectMessageChat& operator+=(const User& u);
 };
 
 #endif // DIRECTMESSAGECHAT_H

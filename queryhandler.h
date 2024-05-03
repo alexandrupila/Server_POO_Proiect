@@ -31,6 +31,7 @@ public:
     int createDirectMessageChat(int creator_id,QString chat_name);
     void addUserToChat(int chat_id,int user_id);
     int getUserId(QString username);
+    void updateUserChats(QString new_username);
 };
 
 #endif // QUERYHANDLER_H

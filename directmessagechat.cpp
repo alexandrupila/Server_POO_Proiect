@@ -33,3 +33,9 @@ void DirectMessageChat::deserialize(QJsonObject &receivedObj)
 {
 
 }
+
+DirectMessageChat &DirectMessageChat::operator+=(const User &u)
+{
+    this->addUser(u);
+}
+

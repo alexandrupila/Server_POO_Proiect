@@ -28,6 +28,10 @@ public:
     QString getEmail() {return email;}
     QString getPassword(){return password;}
     int getId() {return this->id;}
+    User operator=(User const& u)
+    {
+        return u;
+    }
 };
 
 #endif // USER_H

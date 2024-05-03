@@ -7,11 +7,12 @@ QueryHandler* QueryHandler::instance=nullptr;
 
 QueryHandler::QueryHandler()
 {
-    QString serverName = "DESKTOP-JBOB4F7\\SQLEXPRESS";
+    QString serverName = "DESKTOP-UMU84AP\\SQLEXPRESS";
     QString dbName = "ATMTeams_DB";
     db=QSqlDatabase::addDatabase("QODBC");
-    QString dsn = QString("DRIVER={SQL Server};SERVER=%1;DATABASE=%2;Trusted_Connection=yes;").arg(serverName).arg(dbName);
+    QString dsn = QString("DRIVER={SQL Server Native Client 11.0};Server=%1;Database=%2;Trusted_Connection=yes;").arg(serverName).arg(dbName);
     db.setDatabaseName(dsn);
+    db.setConnectOptions("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3");
 
     if (db.open()) {
 
@@ -228,7 +229,10 @@ QVector<IChat *> QueryHandler::retrieveChats(int id_user)
             IMessage* message;
             if(messageQuery.value("continut").isNull())
             {
-                message=new FileMessage(messageQuery.value("filename").toString(),messageQuery.value("file_content").toString(),messageQuery.value("sender_id").toInt(),messageQuery.value("chat_id").toInt(),messageQuery.value("message_id").toInt());
+                QString filename=messageQuery.value("filename").toString();
+                QString file_content=messageQuery.value("file_content").toString();
+                File fisier(filename,file_content);
+                message=new FileMessage(fisier,messageQuery.value("sender_id").toInt(),messageQuery.value("chat_id").toInt(),messageQuery.value("message_id").toInt());
 
             }
             else
@@ -310,5 +314,10 @@ int QueryHandler::getUserId(QString username)
     int user_id=query.value(0).toInt();
 
     return user_id;
+
+}
+
+void QueryHandler::updateUserChats(QString new_username)
+{
 
 }

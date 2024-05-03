@@ -12,6 +12,7 @@ public:
     static void logConnection(QString message);
     static void logGeneral(QString message);
     static void logIncomingRequest(QString message);
+    static void logError(QString message);
 protected:
     static QString logfilepath;
     static Logger* instance;

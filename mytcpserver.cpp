@@ -5,7 +5,8 @@
 #include "updateprofilerequest.h"
 #include "createdirectmessagechatrequest.h"
 #include "Logger.h"
-#include "clientthread.h"
+#include "workerthread.h"
+#include "exception.h"
 
 MyTcpServer* MyTcpServer::instance=nullptr;
 
@@ -16,6 +17,7 @@ MyTcpServer &MyTcpServer::getInstance()
         MyTcpServer::instance=new MyTcpServer();
     }
     return (*MyTcpServer::instance);
+
 }
 
 void MyTcpServer::destroyInstance()
@@ -29,30 +31,40 @@ void MyTcpServer::destroyInstance()
 
 void MyTcpServer::incomingConnection(qintptr socketDescriptor)
 {
-    QTcpSocket *clientSocket = new QTcpSocket(this);
-    if (clientSocket->setSocketDescriptor(socketDescriptor)) {
-        clients.append(clientSocket);
+    // QTcpSocket *clientSocket = new QTcpSocket(this);
+    // if (clientSocket->setSocketDescriptor(socketDescriptor)) {
+    //     clients.append(clientSocket);
 
-        connect(clientSocket, &QTcpSocket::readyRead, this, [this, clientSocket]() {
-            readClientData(clientSocket);
-        });
+    //     connect(clientSocket, &QTcpSocket::readyRead, this, [this, clientSocket]() {
+    //         readClientData(clientSocket);
+    //     });
 
-        connect(clientSocket, &QTcpSocket::disconnected, this, &MyTcpServer::handleClientDisconnected);
+    //     connect(clientSocket, &QTcpSocket::disconnected, this, &MyTcpServer::handleClientDisconnected);
 
-        Logger::logConnection("Client connected with descriptor:"+QString::number(socketDescriptor));
+    //     Logger::logConnection("Client connected with descriptor:"+QString::number(socketDescriptor));
 
 
-    } else {
-        delete clientSocket;
-    }
-    /*
-    ClientThread *clientThread = new ClientThread(socketDescriptor, this);
+    // } else {
+    //     delete clientSocket;
+    // }
 
-    connect(clientThread, &ClientThread::clientConnected, this, &MyTcpServer::handleClientConnected);
-    connect(clientThread, &ClientThread::clientDisconnected, this, &MyTcpServer::handleClientDisconnected);
+    // ClientThread *clientThread = new ClientThread(socketDescriptor, this);
 
-    clientThread->start();
-*/
+    // connect(clientThread, &ClientThread::clientConnected, this, &MyTcpServer::handleClientConnected);
+    // connect(clientThread, &ClientThread::clientDisconnected, this, &MyTcpServer::handleClientDisconnected);
+
+    // clientThread->start();
+
+    QThread* thread= new QThread();
+    WorkerThread* worker=new WorkerThread(socketDescriptor);
+    worker->moveToThread(thread);
+    //connect( worker, &WorkerThread::error, this, &MyClass::errorString);
+    connect( thread, &QThread::started, worker, &WorkerThread::process);
+    connect( worker, &WorkerThread::finished, thread, &QThread::quit);
+    connect( worker, &WorkerThread::finished, worker, &WorkerThread::deleteLater);
+    connect( thread, &QThread::finished, thread, &QThread::deleteLater);
+    thread->start();
+
 
 }
 
@@ -62,8 +74,17 @@ void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientS
     QJsonParseError error;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &error);
 
-    if (error.error != QJsonParseError::NoError) {
-        qDebug() << "Error parsing JSON:" << error.errorString();
+    try
+    {
+        if(error.error!=QJsonParseError::NoError)
+        {
+            Exception exceptie("Error parsing JSON");
+            exceptie.raise();
+        }
+    }
+    catch(Exception& exceptie)
+    {
+        Logger::logError(exceptie.what());
         return;
     }
 
@@ -71,8 +92,9 @@ void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientS
 
     if (jsonDoc.isObject()) {
         jsonObj = jsonDoc.object();
-        qDebug() << "Received JSON:" << jsonObj;
-    } else {
+        Logger::logGeneral("Received JSON");
+        }
+    else {
         qDebug() << "Received data is not JSON object.";
     }
 
@@ -104,7 +126,7 @@ void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientS
     }
     else if(jsonObj.value("request_type")=="login")
     {
-        emit loginRequestSignal(jsonObj,clientSocket);
+        receivedRequest=new LoginRequest;
     }
     else if(jsonObj.value("request_type")=="update_profile")
     {

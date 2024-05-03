@@ -49,6 +49,13 @@ void Logger::logIncomingRequest(QString message)
     logToFile(logMessage);
 }
 
+void Logger::logError(QString message)
+{
+    QString logMessage="[ERROR]" +message;
+    qDebug()<<logMessage;
+    logToFile(logMessage);
+}
+
 Logger::Logger(QObject *parent)
     : QObject{parent}
 {
