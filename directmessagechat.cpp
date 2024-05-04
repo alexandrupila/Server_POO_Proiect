@@ -7,7 +7,10 @@ QJsonDocument DirectMessageChat::serialize()
 {
     QJsonObject jsonObj;
     jsonObj["chat_id"]=this->chat_id;
-    jsonObj["chat_type"]="direct";
+    jsonObj["request_type"]="direct_chat";
+    jsonObj["chat_type"]="direct_chat";
+    //de test
+    jsonObj["chat_name"]="nume_chat_test";
 
     QJsonArray usersArray;
     for(User user_it: user_list)

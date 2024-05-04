@@ -17,6 +17,7 @@ void RegisterRequest::processRequest(QJsonObject request,QTcpSocket* clientSocke
     QString email=request.value("email").toString();
     QString password=request.value("password").toString();
     QString username=request.value("username").toString();
+    QString base64photo=request.value("photo").toString();
 
     qDebug()<<"email:"<<email<<"\n";
     qDebug()<<"username:"<<username<<"\n";
@@ -27,16 +28,15 @@ void RegisterRequest::processRequest(QJsonObject request,QTcpSocket* clientSocke
 
     if(qh.userExists(email,username,password)==0)
     {
-        User user_nou(0,username,email,password);
+        User user_nou(0,username,email,password,base64photo);
         qh.insertUser(user_nou);
-
         user_nou=qh.retrieveNewUser(email);
 
         OkResponse response("valid");
-
         response.sendResponse(clientSocket);
 
-        MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());
+        DataTransferHandler* transferHandler=new DataTransferHandler(clientSocket);
+        transferHandler->sendDataToClient(user_nou.serialize().toJson());
 
         qDebug()<<"userul nu exista, s-au adaugat datele\n";
 
@@ -44,11 +44,8 @@ void RegisterRequest::processRequest(QJsonObject request,QTcpSocket* clientSocke
     }
 
     ErrorResponse response("invalid_credentials");
-
     response.sendResponse(clientSocket);
 
-    //TODO: Mesaj de eroare daca username/email sunt deja existente
-    //MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());
 
 }
 

@@ -22,10 +22,9 @@ void LoginRequest::processRequest(QJsonObject request, QTcpSocket *clientSocket)
     }
 
     //User user_nou=qh.retrieveNewUser(email);
-    User user_nou(5,"test","testmail","testpass");
+    User user_nou(0,"abc","def","ghi");
 
     DataTransferHandler* transferhandler=new DataTransferHandler(clientSocket);
-
     transferhandler->sendDataToClient(user_nou.serialize().toJson());
 
    //MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());

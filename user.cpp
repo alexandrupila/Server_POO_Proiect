@@ -21,6 +21,7 @@ QJsonDocument User::serialize()
     jsonObj["email"]=this->email;
     jsonObj["password"]=this->password;
     jsonObj["request_type"]="user";
+    jsonObj["photo"]=this->base64photo;
 
     QJsonDocument jsonDocument(jsonObj);
 

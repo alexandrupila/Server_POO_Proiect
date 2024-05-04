@@ -20,7 +20,7 @@ Exception * Exception::clone() const
     return new Exception(*this);
 }
 
-const QString Exception::what() const _GLIBCXX_USE_NOEXCEPT
+const QString Exception::what()
 {
     return message;
 }

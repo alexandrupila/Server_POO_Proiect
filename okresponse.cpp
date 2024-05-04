@@ -9,11 +9,12 @@ OkResponse::OkResponse(QString reason)
 void OkResponse::sendResponse(QTcpSocket *clientsocket)
 {
     QJsonObject jsonResponse;
-
-    jsonResponse["response_type"]="ok";
+    jsonResponse["request_type"]="validare";
+    jsonResponse["authentification"]="ok";
     jsonResponse["reason"]=this->reason;
 
     QJsonDocument jsonDoc(jsonResponse);
 
-    MyTcpServer::getInstance().sendDataToClient(jsonDoc.toJson(),clientsocket->socketDescriptor());
+
+    //MyTcpServer::getInstance().sendDataToClient(jsonDoc.toJson(),clientsocket->socketDescriptor());
 }

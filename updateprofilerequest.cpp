@@ -25,7 +25,8 @@ void UpdateProfileRequest::processRequest(QJsonObject request, QTcpSocket *clien
 
     User user_nou(user_id,"nume_nou","email_nou","parola_noua");
 
-    MyTcpServer::getInstance().sendDataToClient(updated_user.serialize().toJson(),clientSocket->socketDescriptor());
+    DataTransferHandler* transferHandler=new DataTransferHandler(clientSocket);
+    transferHandler->sendDataToClient(updated_user.serialize().toJson());
 }
 
 

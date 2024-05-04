@@ -22,6 +22,8 @@ void DataTransferHandler::readClientData()
         if(error.error!=QJsonParseError::NoError)
         {
             Exception exceptie("Error parsing JSON");
+            qDebug()<<data;
+            qDebug()<<error.errorString();
             exceptie.raise();
         }
     }
@@ -55,7 +57,7 @@ void DataTransferHandler::readClientData()
     {
         receivedRequest= new UpdateProfileRequest;
     }
-    else if(jsonObj.value("request_type")=="direct_chat")
+    else if(jsonObj.value("request_type")=="create direct_chat")
     {
         receivedRequest=new CreateDirectMessageChatRequest;
     }

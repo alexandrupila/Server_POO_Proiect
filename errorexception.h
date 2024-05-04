@@ -7,7 +7,7 @@ class ErrorException : public Exception
 {
 public:
     ErrorException();
-    const char* what() const _GLIBCXX_USE_NOEXCEPT;
+    const QString what() {}
 };
 
 #endif // ERROREXCEPTION_H

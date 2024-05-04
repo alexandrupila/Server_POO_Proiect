@@ -7,12 +7,12 @@ QueryHandler* QueryHandler::instance=nullptr;
 
 QueryHandler::QueryHandler()
 {
-    QString serverName = "DESKTOP-UMU84AP\\SQLEXPRESS";
+    QString serverName = "DESKTOP-ST1HSTP\\SQLEXPRESS";
     QString dbName = "ATMTeams_DB";
     db=QSqlDatabase::addDatabase("QODBC");
-    QString dsn = QString("DRIVER={SQL Server Native Client 11.0};Server=%1;Database=%2;Trusted_Connection=yes;").arg(serverName).arg(dbName);
+    QString dsn = QString("DRIVER={ODBC Driver 17 for SQL Server};Server=%1;Database=%2;Trusted_Connection=yes;").arg(serverName).arg(dbName);
     db.setDatabaseName(dsn);
-    db.setConnectOptions("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3");
+    //db.setConnectOptions("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3");
 
     if (db.open()) {
 
@@ -79,20 +79,22 @@ User QueryHandler::retrieveNewUser(QString email)
         int user_id = result.value(0).toInt();
         QString username = result.value(1).toString();
         QString password = result.value(2).toString();
-        QString email_user = result.value(4).toString();
+        QString email_user = result.value(3).toString();
+        QString base64photo=result.value(4).toString();
 
-        return User(user_id, username, email_user,password);
+        return User(user_id, username, email_user,password,base64photo);
 }
 
 void QueryHandler::insertUser(User new_user)
 {
     QSqlQuery query;
 
-    query.prepare("INSERT INTO Users (username, password, email) VALUES (:username, :password, :email)");
+    query.prepare("INSERT INTO Users (username, password, email, photo) VALUES (:username, :password, :email, :photo)");
 
     query.bindValue(":username", new_user.getUsername());
     query.bindValue(":password", new_user.getPassword());
     query.bindValue(":email", new_user.getEmail());
+    query.bindValue(":photo", new_user.getPhoto());
 
 
     QVariantList result = queryDB(query);
@@ -155,12 +157,13 @@ User QueryHandler::retrieveUser(int id)
 
     QVariantList result =this->queryDB(query);
 
-        int user_id = result.value(0).toInt();
-        QString username = result.value(1).toString();
-        QString password = result.value(2).toString();
-        QString email = result.value(4).toString();
+    int user_id = result.value(0).toInt();
+    QString username = result.value(1).toString();
+    QString password = result.value(2).toString();
+    QString email_user = result.value(3).toString();
+    QString base64photo=result.value(4).toString();
 
-        return User(user_id, username, password, email);
+    return User(user_id, username, password, email_user,base64photo);
 
 }
 

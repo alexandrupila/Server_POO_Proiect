@@ -38,11 +38,11 @@ SOURCES += \
     isubmission.cpp \
     iteam.cpp \
     logger.cpp \
-    loginhandler.cpp \
     loginrequest.cpp \
     main.cpp \
     mainwindow.cpp \
     mytcpserver.cpp \
+    okdirectchatresponse.cpp \
     okresponse.cpp \
     queryhandler.cpp \
     registerrequest.cpp \
@@ -82,10 +82,10 @@ HEADERS += \
     isubmission.h \
     iteam.h \
     logger.h \
-    loginhandler.h \
     loginrequest.h \
     mainwindow.h \
     mytcpserver.h \
+    okdirectchatresponse.h \
     okresponse.h \
     queryhandler.h \
     registerrequest.h \

@@ -1,7 +1,7 @@
 #include "createdirectmessagechatrequest.h"
 #include "queryhandler.h"
 #include "directmessagechat.h"
-#include "mytcpserver.h"
+#include "okdirectchatresponse.h"
 CreateDirectMessageChatRequest::CreateDirectMessageChatRequest() {}
 
 void CreateDirectMessageChatRequest::processRequest(QJsonObject request, QTcpSocket *clientSocket)
@@ -24,15 +24,19 @@ void CreateDirectMessageChatRequest::processRequest(QJsonObject request, QTcpSoc
     }
     else return;
 
-    DirectMessageChat* dm_chat=new DirectMessageChat(chat_id,chat_name);
+    DirectMessageChat* dm_chat=new DirectMessageChat(1,"chat_test");
 
-    User user1=qh.retrieveUser(user1_id);
-    User user2=qh.retrieveUser(user2_id);
+    //User user1=qh.retrieveUser(user1_id);
+    //User user2=qh.retrieveUser(user2_id);
+
+    User user1(10,"u1","m1","p1");
+    User user2(11,"u2","m2","p2");
 
     dm_chat->addUser(user1);
     dm_chat->addUser(user2);
 
-    QJsonDocument doc=dm_chat->serialize();
+    IResponse* response=new OkDirectChatResponse(dm_chat);
 
-    MyTcpServer::getInstance().sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
+    response->sendResponse(clientSocket);
+
 }
