@@ -12,7 +12,6 @@ public:
     QJsonDocument serialize() override;
     void deserialize(QJsonObject& receivedObj) override;
 
-    DirectMessageChat& operator+=(const User& u);
 };
 
 #endif // DIRECTMESSAGECHAT_H

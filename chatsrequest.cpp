@@ -20,10 +20,14 @@ void ChatsRequest::processRequest(QJsonObject request, QTcpSocket *clientSocket)
         chatsarray.append(chat_obj);
     }
 
-    obj["chats"]=chatsarray;
+    obj["chaturi"]=chatsarray;
 
-    QJsonDocument doc(obj);
+    obj["request_type"]="chaturi";
 
-    MyTcpServer::getInstance().sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
+    QJsonDocument jsonDoc(obj);
+
+    DataTransferHandler* transferHandler=new DataTransferHandler(clientSocket);
+    transferHandler->sendDataToClient(jsonDoc.toJson());
+
 
 }

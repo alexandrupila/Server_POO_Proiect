@@ -10,8 +10,8 @@ void ErrorResponse::sendResponse(QTcpSocket *clientsocket)
 {
     QJsonObject jsonResponse;
 
-    jsonResponse["response_type"]="error";
-    jsonResponse["reason"]=this->reason;
+    jsonResponse["request_type"]="validare";
+    jsonResponse["result"]="not ok";
 
     QJsonDocument jsonDoc(jsonResponse);
 

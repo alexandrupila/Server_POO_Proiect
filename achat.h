@@ -11,12 +11,14 @@ class AChat : public IChat
 public:
     AChat();
     AChat(int id) {chat_id=id;}
-    void addUser(User user_to_add) override;
+    void addUser(IUser* user_to_add) override;
     void addMessage(IMessage* new_message) override;
+    void setUserList(QVector<IUser*> users) override;
+    void setMessageList(QVector<IMessage*> messages) override;
 protected:
     int chat_id;
     QString chat_name;
-    QVector<User> user_list;
+    QVector<IUser*> user_list;
     QVector<IMessage*> message_list;
 };
 

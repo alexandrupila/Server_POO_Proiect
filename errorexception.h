@@ -8,6 +8,7 @@ class ErrorException : public Exception
 public:
     ErrorException();
     const QString what() {}
+
 };
 
 #endif // ERROREXCEPTION_H

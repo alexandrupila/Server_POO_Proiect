@@ -2,24 +2,28 @@
 
 AAssignment::AAssignment() {}
 
-//TO DO: adaugat serializarea pentru submission-uri???
-
-QJsonDocument AAssignment::serialize()
+int AAssignment::getCreatorId()
 {
-    QJsonObject jsonObj;
-
-    jsonObj["assignment_id"]=this->assignment_id;
-    jsonObj["assignment_name"]=this->assignment_name;
-    jsonObj["creator_id"]=this->creator_id;
-    jsonObj["due_date"]=this->due_date.toString();
-    jsonObj["description"]=this->description;
-
-    QJsonDocument jsonDoc(jsonObj);
-    return QJsonDocument();
-
+    return this->creator_id;
 }
 
-void AAssignment::deserialize(QJsonObject &receivedObj)
+int AAssignment::getTeamId()
 {
-
+    return this->team_id;
 }
+
+QString AAssignment::getAssignmentName()
+{
+    return this->assignment_name;
+}
+
+QString AAssignment::getDescription()
+{
+    return this->description;
+}
+
+QDate AAssignment::getDate()
+{
+    return this->due_date;
+}
+

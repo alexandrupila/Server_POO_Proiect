@@ -8,14 +8,13 @@ class AChannel : public IChannel
 {
 public:
     AChannel();
-    QJsonDocument serialize();
-    void deserialize(QJsonObject& receivedObj);
+    virtual void setChannelChat(IChat* chat) override {this->channel_chat=chat;}
+    virtual int getChatId() override {return this->chat_id;}
 protected:
+    int chat_id;
     int channel_id;
     QString channel_name;
-    //QVector<User*> user_list;
-    //vector fisiere???
-    GroupChat channel_chat;
+    IChat* channel_chat;
 };
 
 #endif // ACHANNEL_H

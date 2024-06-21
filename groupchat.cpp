@@ -7,13 +7,15 @@ QJsonDocument GroupChat::serialize()
 {
     QJsonObject jsonObj;
     jsonObj["chat_id"]=this->chat_id;
-    jsonObj["chat_type"]="direct";
-    jsonObj["creator_Id"]=this->creator_id;
+    jsonObj["creator_id"]=this->creator_id;
+    jsonObj["chat_type"]="group_chat";
+    jsonObj["request_type"]="group_chat";
+    jsonObj["chat_name"]=this->chat_name;
 
     QJsonArray usersArray;
-    for(User user_it: user_list)
+    for(auto user_it: user_list)
     {
-        QJsonObject user_obj=user_it.serialize().object();
+        QJsonObject user_obj=user_it->serialize().object();
         usersArray.append(user_obj);
     }
     jsonObj["users"]=usersArray;

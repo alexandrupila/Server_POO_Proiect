@@ -9,13 +9,14 @@ QJsonDocument DirectMessageChat::serialize()
     jsonObj["chat_id"]=this->chat_id;
     jsonObj["request_type"]="direct_chat";
     jsonObj["chat_type"]="direct_chat";
+    jsonObj["request_type"]="direct_chat";
     //de test
-    jsonObj["chat_name"]="nume_chat_test";
+    jsonObj["chat_name"]=this->chat_name;
 
     QJsonArray usersArray;
-    for(User user_it: user_list)
+    for(auto user_it: user_list)
     {
-        QJsonObject user_obj=user_it.serialize().object();
+        QJsonObject user_obj=user_it->serialize().object();
         usersArray.append(user_obj);
     }
     jsonObj["users"]=usersArray;
@@ -35,10 +36,5 @@ QJsonDocument DirectMessageChat::serialize()
 void DirectMessageChat::deserialize(QJsonObject &receivedObj)
 {
 
-}
-
-DirectMessageChat &DirectMessageChat::operator+=(const User &u)
-{
-    this->addUser(u);
 }
 
