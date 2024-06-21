@@ -5,7 +5,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTcpSocket>
+#include "queryhandler.h"
 #include "datatransferhandler.h"
+#include "okresponse.h"
+#include "errorresponse.h"
 
 class IRequest
 {

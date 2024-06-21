@@ -7,29 +7,41 @@ SendMessageRequest::SendMessageRequest() {}
 
 void SendMessageRequest::processRequest(QJsonObject request, QTcpSocket *clientSocket)
 {
-     QueryHandler& qh=QueryHandler::getInstance();
-
-    int sender_id=request.value("sender_id").toInt();
-    int chat_id=request.value("chat_id").toInt();
+    QueryHandler& qh=QueryHandler::getInstance();
 
     IMessage* new_message;
 
+    //sa se verifice daca user ul este in chat
+
+    int user_id=request["user_id"].toInt();
+    int chat_id=request["chat_id"].toInt();
+
+    if(!qh.isInChat(user_id,chat_id)) return;
+
     if(request.value("filename").isUndefined())
     {
-        QString content=request.value("content").toString();
-        new_message=new TextMessage(content,sender_id,chat_id);
+        new_message=new TextMessage;
     }
     else
     {
-        QString filename=request.value("filename").toString();
-        QString file_content=request.value("file_content").toString();
-        File newfile(filename,file_content);
-        new_message=new FileMessage(newfile,sender_id,chat_id);
-        //initializare pentru FileMessage
+        new_message=new FileMessage;
+        new_message->deserialize(request);
+
+        int message_id=qh.addMessage(new_message);
+
+        new_message=qh.retrieveSpecificMessage(message_id);
+
+        QJsonObject jsonObj=new_message->serialize().object();
+
+        IResponse* resp=new OkResponse(jsonObj,"create chat_file");
+        resp->sendResponse(clientSocket);
+        return;
     }
 
-    //todo: bag in baza de date mesajul s
-    //
+    new_message->deserialize(request);
+    qh.addMessage(new_message);
+
+    //TO DO? Eventual un fel de response???
 
 
 }

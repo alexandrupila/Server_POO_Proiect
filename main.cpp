@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
         Logger::logGeneral( "Failed to start server:" +MyTcpServer::getInstance().errorString());
         return 1;
     } else {
+        QueryHandler& qh=QueryHandler::getInstance();
         Logger::logGeneral("Server started on port 12345.");
     }
 

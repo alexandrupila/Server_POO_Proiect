@@ -28,23 +28,38 @@ void RegisterRequest::processRequest(QJsonObject request,QTcpSocket* clientSocke
 
     if(qh.userExists(email,username,password)==0)
     {
-        User user_nou(0,username,email,password,base64photo);
+        IUser* user_nou=new User(0,username,email,password,base64photo);
         qh.insertUser(user_nou);
         user_nou=qh.retrieveNewUser(email);
 
-        OkResponse response("valid");
-        response.sendResponse(clientSocket);
+        // OkResponse response("valid");
+        // response.sendResponse(clientSocket);
+
+        QJsonObject jsonObj;
+        jsonObj["request_type"]="register";
+
+        QJsonDocument doc(jsonObj);
 
         DataTransferHandler* transferHandler=new DataTransferHandler(clientSocket);
-        transferHandler->sendDataToClient(user_nou.serialize().toJson());
+        transferHandler->sendDataToClient(doc.toJson());
 
         qDebug()<<"userul nu exista, s-au adaugat datele\n";
 
         return;
     }
+    else
+    {
+        QJsonObject jsonObj;
+        jsonObj["authentification"]="not ok";
 
-    ErrorResponse response("invalid_credentials");
-    response.sendResponse(clientSocket);
+        QJsonDocument doc(jsonObj);
+
+        DataTransferHandler* transferHandler=new DataTransferHandler(clientSocket);
+        transferHandler->sendDataToClient(doc.toJson());
+    }
+
+    // ErrorResponse response("invalid_credentials");
+    // response.sendResponse(clientSocket);
 
 
 }

@@ -13,6 +13,15 @@ User::User(const User &other)
     this->id=other.id;
 }
 
+User::User(int user_id, QString username, QString email, QString password, QString photo)
+{
+    this->id=user_id;
+    this->username=username;
+    this->email=email;
+    this->password=password;
+    this->base64photo=photo;
+}
+
 QJsonDocument User::serialize()
 {
     QJsonObject jsonObj;
@@ -20,7 +29,6 @@ QJsonDocument User::serialize()
     jsonObj["id"]=this->id;
     jsonObj["email"]=this->email;
     jsonObj["password"]=this->password;
-    jsonObj["request_type"]="user";
     jsonObj["photo"]=this->base64photo;
 
     QJsonDocument jsonDocument(jsonObj);

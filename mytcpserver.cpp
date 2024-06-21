@@ -58,7 +58,6 @@ void MyTcpServer::incomingConnection(qintptr socketDescriptor)
     QThread* thread= new QThread();
     WorkerThread* worker=new WorkerThread(socketDescriptor);
     worker->moveToThread(thread);
-    //connect( worker, &WorkerThread::error, this, &MyClass::errorString);
     connect( thread, &QThread::started, worker, &WorkerThread::process);
     connect( worker, &WorkerThread::finished, thread, &QThread::quit);
     connect( worker, &WorkerThread::finished, worker, &WorkerThread::deleteLater);
@@ -69,133 +68,133 @@ void MyTcpServer::incomingConnection(qintptr socketDescriptor)
 }
 
 
-void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientSocket)
-{
-    QJsonParseError error;
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &error);
+// void MyTcpServer::processJsonData(const QByteArray &jsonData,QTcpSocket* clientSocket)
+// {
+//     QJsonParseError error;
+//     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &error);
 
-    try
-    {
-        if(error.error!=QJsonParseError::NoError)
-        {
-            Exception exceptie("Error parsing JSON");
-            exceptie.raise();
-        }
-    }
-    catch(Exception& exceptie)
-    {
-        Logger::logError(exceptie.what());
-        return;
-    }
+//     try
+//     {
+//         if(error.error!=QJsonParseError::NoError)
+//         {
+//             Exception exceptie("Error parsing JSON");
+//             exceptie.raise();
+//         }
+//     }
+//     catch(Exception& exceptie)
+//     {
+//         Logger::logError(exceptie.what());
+//         return;
+//     }
 
-    QJsonObject jsonObj;
+//     QJsonObject jsonObj;
 
-    if (jsonDoc.isObject()) {
-        jsonObj = jsonDoc.object();
-        Logger::logGeneral("Received JSON");
-        }
-    else {
-        qDebug() << "Received data is not JSON object.";
-    }
+//     if (jsonDoc.isObject()) {
+//         jsonObj = jsonDoc.object();
+//         Logger::logGeneral("Received JSON");
+//         }
+//     else {
+//         qDebug() << "Received data is not JSON object.";
+//     }
 
-    IRequest* receivedRequest;
+//     IRequest* receivedRequest;
 
-    // if(jsonObj.value("Request_type")=="Login")
-    // {
-    //     QJsonObject tempObj;
-    //     tempObj["Login"]="ok";
-    //     qDebug()<<"Sending json: "<<tempObj;
-    //     QJsonDocument doc(tempObj);
+//     // if(jsonObj.value("Request_type")=="Login")
+//     // {
+//     //     QJsonObject tempObj;
+//     //     tempObj["Login"]="ok";
+//     //     qDebug()<<"Sending json: "<<tempObj;
+//     //     QJsonDocument doc(tempObj);
 
-    //     MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
-    //     return;
-    // }
-    // else if(jsonObj.value("Request_type")=="Register")
-    // {
-    //     QJsonObject tempObj;
-    //     tempObj["Register"]="ok";
-    //     qDebug()<<"Sending json: "<<tempObj;
-    //     QJsonDocument doc(tempObj);
+//     //     MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
+//     //     return;
+//     // }
+//     // else if(jsonObj.value("Request_type")=="Register")
+//     // {
+//     //     QJsonObject tempObj;
+//     //     tempObj["Register"]="ok";
+//     //     qDebug()<<"Sending json: "<<tempObj;
+//     //     QJsonDocument doc(tempObj);
 
-    //     MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
-    //     return;
-    // }
-    if(jsonObj.value("request_type")=="register")
-    {
-        receivedRequest=new RegisterRequest;
-    }
-    else if(jsonObj.value("request_type")=="login")
-    {
-        receivedRequest=new LoginRequest;
-    }
-    else if(jsonObj.value("request_type")=="update_profile")
-    {
-        receivedRequest= new UpdateProfileRequest;
-    }
-    else if(jsonObj.value("request_type")=="direct_chat")
-    {
-        receivedRequest=new CreateDirectMessageChatRequest;
-    }
+//     //     MyTcpServer::sendDataToClient(doc.toJson(),clientSocket->socketDescriptor());
+//     //     return;
+//     // }
+//     if(jsonObj.value("request_type")=="register")
+//     {
+//         receivedRequest=new RegisterRequest;
+//     }
+//     else if(jsonObj.value("request_type")=="login")
+//     {
+//         receivedRequest=new LoginRequest;
+//     }
+//     else if(jsonObj.value("request_type")=="update_profile")
+//     {
+//         receivedRequest= new UpdateProfileRequest;
+//     }
+//     else if(jsonObj.value("request_type")=="direct_chat")
+//     {
+//         receivedRequest=new CreateDirectMessageChatRequest;
+//     }
 
-    else return;
+//     else return;
 
-    receivedRequest->processRequest(jsonObj,clientSocket);
+//     receivedRequest->processRequest(jsonObj,clientSocket);
 
 
-}
+// }
 
-void MyTcpServer::readClientData(QTcpSocket *clientSocket)
-{
-    QByteArray data = clientSocket->readAll();
+// void MyTcpServer::readClientData(QTcpSocket *clientSocket)
+// {
+//     QByteArray data = clientSocket->readAll();
 
-    MyTcpServer::getInstance().processJsonData(data,clientSocket);
-}
+//     MyTcpServer::getInstance().processJsonData(data,clientSocket);
+// }
 
-void MyTcpServer::handleClientDisconnected()
-{
+// void MyTcpServer::handleClientDisconnected()
+// {
 
-}
+// }
 
-void MyTcpServer::sendDataToClients(const QByteArray &data)
-{
+// void MyTcpServer::sendDataToClients(const QByteArray &data)
+// {
 
-}
+// }
 
-void MyTcpServer::sendDataToClient(const QByteArray &data, qintptr clientSocketDescriptor)
-{
+// void MyTcpServer::sendDataToClient(const QByteArray &data, qintptr clientSocketDescriptor)
+// {
 
-    qDebug()<<"Sending data to client "<<clientSocketDescriptor<<"\n";
-    foreach (QTcpSocket *clientSocket, clients) {
-        if (clientSocket->socketDescriptor() == clientSocketDescriptor) {
-            if (clientSocket->write(data) == -1) {
-                qDebug() << "Failed to send data to client with descriptor:" << clientSocketDescriptor;
-            }
-            return;
-        }
-    }
+//     qDebug()<<"Sending data to client "<<clientSocketDescriptor<<"\n";
+//     foreach (QTcpSocket *clientSocket, clients) {
+//         if (clientSocket->socketDescriptor() == clientSocketDescriptor) {
+//             if (clientSocket->write(data) == -1) {
+//                 qDebug() << "Failed to send data to client with descriptor:" << clientSocketDescriptor;
+//             }
+//             return;
+//         }
+//     }
 
-    qDebug() << "Client with descriptor" << clientSocketDescriptor << "not found!";
+//     qDebug() << "Client with descriptor" << clientSocketDescriptor << "not found!";
 
-}
+// }
 
-void MyTcpServer::handleClientConnected(QTcpSocket *clientSocket)
-{
-    if (clientSocket->setSocketDescriptor(clientSocket->socketDescriptor())) {
-        // Add the client socket to the list of connected clients
-        clients.append(clientSocket);
+// void MyTcpServer::handleClientConnected(QTcpSocket *clientSocket)
+// {
+//     if (clientSocket->setSocketDescriptor(clientSocket->socketDescriptor())) {
+//         // Add the client socket to the list of connected clients
+//         clients.append(clientSocket);
 
-        // Connect signals for reading data and handling disconnection
-        connect(clientSocket, &QTcpSocket::readyRead, this, [this, clientSocket]() {
-            readClientData(clientSocket);
-        });
-        connect(clientSocket, &QTcpSocket::disconnected, this, &MyTcpServer::handleClientDisconnected);
+//         // Connect signals for reading data and handling disconnection
+//         connect(clientSocket, &QTcpSocket::readyRead, this, [this, clientSocket]() {
+//             readClientData(clientSocket);
+//         });
+//         connect(clientSocket, &QTcpSocket::disconnected, this, &MyTcpServer::handleClientDisconnected);
 
-        // Log the client connection
-        Logger::logConnection("Client connected with descriptor:" + QString::number(clientSocket->socketDescriptor()));
+//         // Log the client connection
+//         Logger::logConnection("Client connected with descriptor:" + QString::number(clientSocket->socketDescriptor()));
 
-        // Perform any other initialization tasks, if needed
-    } else {
-        delete clientSocket;
-    }
-}
+//         // Perform any other initialization tasks, if needed
+//     } else {
+//         delete clientSocket;
+//     }
+// }
 

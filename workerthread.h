@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include "datatransferhandler.h"
 
 class WorkerThread : public QObject
 {
@@ -10,6 +11,7 @@ class WorkerThread : public QObject
 protected:
     qintptr m_socketDescriptor;
     QTcpSocket* clientSocket;
+    DataTransferHandler* datahandler;
 public:
     explicit WorkerThread(QObject *parent = nullptr);
     WorkerThread(qintptr socket_descr) {this->m_socketDescriptor=socket_descr;}

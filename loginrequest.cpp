@@ -3,6 +3,7 @@
 #include "mytcpserver.h"
 #include "queryhandler.h"
 #include "datatransferhandler.h"
+#include "loginresponse.h"
 
 LoginRequest::LoginRequest() {}
 
@@ -18,15 +19,15 @@ void LoginRequest::processRequest(QJsonObject request, QTcpSocket *clientSocket)
 
     if(!qh.checkCredentials(email,password))
     {
-        //return;
+        return;
     }
 
-    //User user_nou=qh.retrieveNewUser(email);
-    User user_nou(0,"abc","def","ghi");
+    IUser* user_nou=qh.retrieveNewUser(email);
 
-    DataTransferHandler* transferhandler=new DataTransferHandler(clientSocket);
-    transferhandler->sendDataToClient(user_nou.serialize().toJson());
+    IResponse *resp=new LoginResponse(user_nou);
+    resp->sendResponse(clientSocket);
 
-   //MyTcpServer::getInstance().sendDataToClient(user_nou.serialize().toJson(),clientSocket->socketDescriptor());
+    // DataTransferHandler* transferhandler=new DataTransferHandler(clientSocket);
+    // transferhandler->sendDataToClient(user_nou.serialize().toJson());
 
 }
